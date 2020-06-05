@@ -4,10 +4,9 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/sampado/bookstore_oauth-api/src/utils/errors"
-
 	"github.com/gin-gonic/gin"
 	"github.com/sampado/bookstore_oauth-api/src/domain/access_token"
+	"github.com/sampado/bookstore_utils-go/rest_errors"
 )
 
 type AccessTokenHandler interface {
@@ -34,17 +33,17 @@ func (h *accessTokenHandler) GetById(c *gin.Context) {
 }
 
 func (h *accessTokenHandler) Create(c *gin.Context) {
-	var at access_token.AccessToken
-	if err := c.ShouldBindJSON(&at); err != nil {
-		restErr := errors.NewBadRequestError("invalid JSON body")
+	var request access_token.AccessTokenRequest
+	if err := c.ShouldBindJSON(&request); err != nil {
+		restErr := rest_errors.NewBadRequestError("invalid JSON body")
 		c.JSON(restErr.Status, restErr)
 		return
 	}
 
-	if err := h.service.Create(at); err != nil {
+	accessToken, err := h.service.Create(request)
+	if err != nil {
 		c.JSON(err.Status, err)
 		return
 	}
-
-	c.JSON(http.StatusCreated, at)
+	c.JSON(http.StatusCreated, accessToken)
 }

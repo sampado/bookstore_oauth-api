@@ -5,6 +5,7 @@ import (
 	"github.com/sampado/bookstore_oauth-api/src/domain/access_token"
 	"github.com/sampado/bookstore_oauth-api/src/http"
 	"github.com/sampado/bookstore_oauth-api/src/repository/db"
+	"github.com/sampado/bookstore_oauth-api/src/repository/rest"
 )
 
 var (
@@ -13,7 +14,8 @@ var (
 
 func StartApplication() {
 	dbRepository := db.NewRepository()
-	atService := access_token.NewService(dbRepository)
+	restRepo := rest.NewRepository()
+	atService := access_token.NewService(dbRepository, restRepo)
 	atHandler := http.NewHandler(atService)
 
 	router.GET("/oauth/access_token/:access_token_id", atHandler.GetById)
