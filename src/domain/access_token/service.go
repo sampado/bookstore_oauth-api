@@ -6,15 +6,15 @@ import (
 )
 
 type Repository interface {
-	GetById(string) (*AccessToken, *rest_errors.RestError)
-	Create(AccessToken) *rest_errors.RestError
-	UpdateExpirationTime(AccessToken) *rest_errors.RestError
+	GetById(string) (*AccessToken, rest_errors.RestError)
+	Create(AccessToken) rest_errors.RestError
+	UpdateExpirationTime(AccessToken) rest_errors.RestError
 }
 
 type Service interface {
-	GetById(string) (*AccessToken, *rest_errors.RestError)
-	Create(AccessTokenRequest) (*AccessToken, *rest_errors.RestError)
-	UpdateExpirationTime(AccessToken) *rest_errors.RestError
+	GetById(string) (*AccessToken, rest_errors.RestError)
+	Create(AccessTokenRequest) (*AccessToken, rest_errors.RestError)
+	UpdateExpirationTime(AccessToken) rest_errors.RestError
 }
 
 type service struct {
@@ -29,7 +29,7 @@ func NewService(repo Repository, restRepo rest.RestUsersRepository) Service {
 	}
 }
 
-func (s *service) GetById(ID string) (*AccessToken, *rest_errors.RestError) {
+func (s *service) GetById(ID string) (*AccessToken, rest_errors.RestError) {
 	accessToken, err := s.repository.GetById(ID)
 	if err != nil {
 		return nil, err
@@ -37,7 +37,7 @@ func (s *service) GetById(ID string) (*AccessToken, *rest_errors.RestError) {
 	return accessToken, nil
 }
 
-func (s *service) Create(request AccessTokenRequest) (*AccessToken, *rest_errors.RestError) {
+func (s *service) Create(request AccessTokenRequest) (*AccessToken, rest_errors.RestError) {
 	if err := request.Validate(); err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func (s *service) Create(request AccessTokenRequest) (*AccessToken, *rest_errors
 	return &at, nil
 }
 
-func (s *service) UpdateExpirationTime(at AccessToken) *rest_errors.RestError {
+func (s *service) UpdateExpirationTime(at AccessToken) rest_errors.RestError {
 	if err := at.Validate(); err != nil {
 		return err
 	}

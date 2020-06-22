@@ -26,7 +26,7 @@ func (h *accessTokenHandler) GetById(c *gin.Context) {
 	accessTokenId := strings.TrimSpace(c.Param("access_token_id"))
 	accessToken, err := h.service.GetById(accessTokenId)
 	if err != nil {
-		c.JSON(err.Status, err)
+		c.JSON(err.Status(), err)
 		return
 	}
 	c.JSON(http.StatusOK, accessToken)
@@ -36,13 +36,13 @@ func (h *accessTokenHandler) Create(c *gin.Context) {
 	var request access_token.AccessTokenRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
 		restErr := rest_errors.NewBadRequestError("invalid JSON body")
-		c.JSON(restErr.Status, restErr)
+		c.JSON(restErr.Status(), restErr)
 		return
 	}
 
 	accessToken, err := h.service.Create(request)
 	if err != nil {
-		c.JSON(err.Status, err)
+		c.JSON(err.Status(), err)
 		return
 	}
 	c.JSON(http.StatusCreated, accessToken)
